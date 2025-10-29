@@ -49,11 +49,13 @@ def calculate_text_density(image):
         float: плотность текста (0-1)
     """
     try:
+        #Конвертируем PIL Image в numpy array
+        img_array= np.array(image)
         # Конвертируем в grayscale
-        if len(image.shape) == 3:
-            gray = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
+        if len(img_array.shape) == 3:
+            gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
         else:
-            gray = np.array(image)
+            gray = img_array
         
         # Бинаризация (черный/белый)
         _, binary = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
@@ -80,7 +82,7 @@ def analyze_visual_text_density(pdf_path, sample_pages=5):
     
     try:
         # Конвертируем PDF в изображения (только несколько страниц для скорости)
-        images = convert_from_path(pdf_path, first_n=min(sample_pages, 10), dpi=100)
+        images = convert_from_path(pdf_path,first_page=1, last_page=min(sample_pages, 10), dpi=100)
         
         if not images:
             return 0.0
@@ -203,8 +205,8 @@ def analyze_pdf_ocr_need(pdf_path):
 
 # Пример использования
 if __name__ == "__main__":
-    # Тестовый вызов - замени путь на свой PDF
-    pdf_path = r"C:\Users\Pavel\Desktop\Dev\FirstTask\testpdf1.pdf"  # укажи путь к своему PDF
+    # Тестовый вызов
+    pdf_path = r"C:\Users\Pavel\Desktop\Dev\FirstTask\testpdf10.pdf"  # путь к PDF
     
     if os.path.exists(pdf_path):
         result = analyze_pdf_ocr_need(pdf_path)
